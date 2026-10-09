@@ -4,6 +4,7 @@
 </header>
 
 <main class="container">
+
   <div class="acoes">
     <h2>Publicações</h2>
 
@@ -16,7 +17,7 @@
   </div>
 
   @if (carregando() && posts().length === 0) {
-    <p>Carregando publicações...</p>
+    <p class="mensagem">Carregando publicações...</p>
   }
 
   @if (erro()) {
@@ -24,31 +25,77 @@
   }
 
   @if (!carregando() && !erro() && posts().length === 0) {
-    <p>Nenhuma publicação encontrada.</p>
+    <p class="mensagem">Nenhuma publicação encontrada.</p>
   }
 
   @if (posts().length > 0) {
     <section class="lista-posts">
+
       @for (post of posts(); track post.id) {
-        <article class="post">
-          <p class="autor">
-            Por {{ post.autor }} · {{ post.data }}
-          </p>
+        <article
+          class="post"
+          [class.post-selecionado]="postSelecionadoId() === post.id">
 
-          <h3>{{ post.titulo }}</h3>
+          <div
+            class="post-cabecalho"
+            role="button"
+            tabindex="0"
+            [attr.aria-expanded]="postSelecionadoId() === post.id"
+            (click)="alternarComentarios(post.id)"
+            (keydown.enter)="alternarComentarios(post.id)"
+            (keydown.space)="$event.preventDefault(); alternarComentarios(post.id)">
 
-          <p class="texto">{{ post.texto }}</p>
+            <p class="autor">
+              Por {{ post.autor }} · {{ post.data }}
+            </p>
 
-          <p class="comentarios">
-            {{ post.comentarios?.length ?? 0 }} comentário(s)
-          </p>
+            <h3>{{ post.titulo }}</h3>
+
+            <p class="texto">{{ post.texto }}</p>
+
+            <p class="comentarios">
+              {{ post.comentarios?.length ?? 0 }}
+              comentário(s)
+              ·
+              {{ postSelecionadoId() === post.id
+                ? 'Ocultar comentários'
+                : 'Ver comentários' }}
+            </p>
+          </div>
+
+          @if (postSelecionadoId() === post.id) {
+            <section class="detalhes-comentarios">
+              <h4>Comentários</h4>
+
+              @if (post.comentarios && post.comentarios.length > 0) {
+                @for (comentario of post.comentarios; track comentario.id) {
+                  <article class="comentario">
+                    <p class="comentario-autor">
+                      {{ comentario.autor }} · {{ comentario.data }}
+                    </p>
+
+                    <p class="comentario-texto">
+                      {{ comentario.texto }}
+                    </p>
+                  </article>
+                }
+              } @else {
+                <p class="mensagem">
+                  Este artigo ainda não possui comentários.
+                </p>
+              }
+            </section>
+          }
+
         </article>
       }
+
     </section>
   }
 
   @if (totalPaginas() > 1) {
-    <nav class="paginacao">
+    <nav class="paginacao" aria-label="Paginação das publicações">
+
       <button
         type="button"
         [disabled]="paginaAtual() === 0 || carregando()"
@@ -66,6 +113,8 @@
         (click)="irParaPagina(paginaAtual() + 1)">
         Próxima
       </button>
+
     </nav>
   }
+
 </main>

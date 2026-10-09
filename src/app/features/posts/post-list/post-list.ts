@@ -12,6 +12,7 @@ import { Post } from '../../../core/models/post.model';
   styleUrl: './post-list.css'
 })
 export class PostList implements OnInit {
+
   private readonly postService = inject(PostService);
 
   posts = signal<Post[]>([]);
@@ -19,6 +20,9 @@ export class PostList implements OnInit {
   totalPaginas = signal(0);
   carregando = signal(false);
   erro = signal('');
+
+  // Controla qual artigo está exibindo os comentários
+  postSelecionadoId = signal<string | null>(null);
 
   ngOnInit(): void {
     this.carregarPosts();
@@ -36,17 +40,31 @@ export class PostList implements OnInit {
       },
       error: (erro) => {
         console.error('Erro ao carregar posts:', erro);
+
         this.erro.set(
           'Não foi possível carregar os posts. Verifique se a API está funcionando.'
         );
+
         this.carregando.set(false);
       }
     });
   }
 
+  alternarComentarios(postId: string): void {
+    if (this.postSelecionadoId() === postId) {
+      this.postSelecionadoId.set(null);
+    } else {
+      this.postSelecionadoId.set(postId);
+    }
+  }
+
   irParaPagina(pagina: number): void {
     if (pagina >= 0 && pagina < this.totalPaginas()) {
       this.paginaAtual.set(pagina);
+
+      // Fecha os comentários ao trocar de página
+      this.postSelecionadoId.set(null);
+
       this.carregarPosts();
     }
   }
