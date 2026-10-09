@@ -1,7 +1,5 @@
-
-
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Post, PostRequest } from '../models/post.model';
@@ -11,12 +9,28 @@ import { PageResponse } from '../models/page-response.model';
   providedIn: 'root'
 })
 export class PostService {
+
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:8080/posts';
 
-  listar(page = 0, size = 10): Observable<PageResponse<Post>> {
+  listar(
+    page = 0,
+    size = 10,
+    titulo = ''
+  ): Observable<PageResponse<Post>> {
+
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('sort', 'data,desc');
+
+    if (titulo.trim()) {
+      params = params.set('titulo', titulo.trim());
+    }
+
     return this.http.get<PageResponse<Post>>(
-      `${this.apiUrl}?page=${page}&size=${size}&sort=data,desc`
+      this.apiUrl,
+      { params }
     );
   }
 
@@ -29,7 +43,10 @@ export class PostService {
   }
 
   atualizar(id: string, post: PostRequest): Observable<Post> {
-    return this.http.put<Post>(`${this.apiUrl}/${id}`, post);
+    return this.http.put<Post>(
+      `${this.apiUrl}/${id}`,
+      post
+    );
   }
 
   excluir(id: string): Observable<void> {
