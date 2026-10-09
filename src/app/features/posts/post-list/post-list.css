@@ -1,0 +1,86 @@
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f5f7fb;
+  color: #202938;
+  font-family: Arial, sans-serif;
+}
+
+.cabecalho {
+  padding: 32px 20px;
+  background: #173b70;
+  color: white;
+  text-align: center;
+}
+
+.cabecalho h1 {
+  margin: 0 0 8px;
+}
+
+.container {
+  width: min(900px, 92%);
+  margin: 32px auto;
+}
+
+.acoes,
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.post {
+  margin: 18px 0;
+  padding: 24px;
+  border: 1px solid #e1e7ef;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 3px 12px #14213d0a;
+}
+
+.post h3 {
+  margin: 12px 0;
+  font-size: 22px;
+}
+
+.autor,
+.comentarios {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.texto {
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+button {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 7px;
+  background: #2459a9;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.erro {
+  color: #b42318;
+}
+
+@media (max-width: 600px) {
+  .acoes,
+  .paginacao {
+    flex-wrap: wrap;
+  }
+
+  .post {
+    padding: 18px;
+  }
+}

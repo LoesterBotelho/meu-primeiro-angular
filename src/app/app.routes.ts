@@ -1,3 +1,14 @@
-import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { Routes } from '@angular/router';
+import { PostList } from './features/posts/post-list/post-list';
+
+export const routes: Routes = [
+  {
+    path: '',
+    component: PostList
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  }
+];

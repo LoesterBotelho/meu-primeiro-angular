@@ -1,0 +1,71 @@
+<header class="cabecalho">
+  <h1>Meu Blog</h1>
+  <p>Artigos e ideias da nossa comunidade</p>
+</header>
+
+<main class="container">
+  <div class="acoes">
+    <h2>Publicações</h2>
+
+    <button
+      type="button"
+      (click)="carregarPosts()"
+      [disabled]="carregando()">
+      {{ carregando() ? 'Carregando...' : 'Atualizar' }}
+    </button>
+  </div>
+
+  @if (carregando() && posts().length === 0) {
+    <p>Carregando publicações...</p>
+  }
+
+  @if (erro()) {
+    <p class="erro">{{ erro() }}</p>
+  }
+
+  @if (!carregando() && !erro() && posts().length === 0) {
+    <p>Nenhuma publicação encontrada.</p>
+  }
+
+  @if (posts().length > 0) {
+    <section class="lista-posts">
+      @for (post of posts(); track post.id) {
+        <article class="post">
+          <p class="autor">
+            Por {{ post.autor }} · {{ post.data }}
+          </p>
+
+          <h3>{{ post.titulo }}</h3>
+
+          <p class="texto">{{ post.texto }}</p>
+
+          <p class="comentarios">
+            {{ post.comentarios?.length ?? 0 }} comentário(s)
+          </p>
+        </article>
+      }
+    </section>
+  }
+
+  @if (totalPaginas() > 1) {
+    <nav class="paginacao">
+      <button
+        type="button"
+        [disabled]="paginaAtual() === 0 || carregando()"
+        (click)="irParaPagina(paginaAtual() - 1)">
+        Anterior
+      </button>
+
+      <span>
+        Página {{ paginaAtual() + 1 }} de {{ totalPaginas() }}
+      </span>
+
+      <button
+        type="button"
+        [disabled]="paginaAtual() >= totalPaginas() - 1 || carregando()"
+        (click)="irParaPagina(paginaAtual() + 1)">
+        Próxima
+      </button>
+    </nav>
+  }
+</main>
